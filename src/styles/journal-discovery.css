@@ -1,0 +1,368 @@
+.discover-toolbar {
+  display: flex;
+  gap: 15px;
+}
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  flex: 1;
+  border: 1px solid #d7dfd0;
+  border-radius: 10px;
+  background: white;
+  padding: 0 16px;
+  margin: 0;
+}
+.search-field input[type="search"] {
+  border: 0;
+  padding: 12px 0;
+  margin: 0;
+  outline-offset: 0;
+  font-size: 13px;
+  background: transparent;
+}
+.search-field:focus-within {
+  outline: 3px solid #327aa0;
+  outline-offset: 2px;
+}
+.search-field input:focus {
+  outline: none;
+}
+.discover-toolbar > .button {
+  font-size: 12px;
+}
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 24px 0;
+}
+.category-tabs .chip {
+  font-size: 11px;
+  padding: 9px 16px;
+}
+.applied-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 20px 0;
+}
+.applied-filters .chip {
+  font-size: 10px;
+}
+.result-count {
+  font-size: 11px;
+  margin-bottom: 20px;
+}
+.load-more {
+  text-align: center;
+  margin: 30px 0;
+}
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.memory-card {
+  display: block;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.memory-image {
+  background: #e5ebdd;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  color: #7a8e65;
+}
+.memory-image > span {
+  font-size: 12px;
+}
+.memory-card-copy {
+  padding: 22px;
+}
+.memory-card h2 {
+  font-size: 21px;
+  margin: 8px 0 12px;
+}
+.memory-card p {
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.memory-location {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 20px;
+}
+.memory-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  max-width: 850px;
+}
+.memory-timeline .memory-card {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+}
+.memory-timeline .memory-image {
+  height: 270px;
+}
+.memory-timeline .memory-card-copy {
+  align-self: center;
+  padding: 30px;
+}
+.history-list > a {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+.history-list > a > div {
+  flex: 1;
+}
+.history-list h3 {
+  margin-bottom: 8px;
+}
+.history-list span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.memory-detail {
+  max-width: 800px;
+  margin: auto;
+}
+.memory-detail-image {
+  height: 480px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--sage);
+}
+.journal-note {
+  padding: 35px;
+  background: #f3f0e4;
+  border-radius: 8px;
+  margin: 25px 0;
+}
+.journal-note p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 17px;
+  line-height: 1.9;
+  color: #4e5c49;
+  margin: 18px 0;
+}
+.journal-note > span {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  font-size: 12px;
+}
+.memory-stars {
+  color: #977417;
+  letter-spacing: 4px;
+  margin: 20px 0;
+}
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  background: #edf1e5;
+  border-radius: 16px;
+  padding: 35px;
+}
+.avatar.large {
+  width: 100px;
+  height: 100px;
+  font-size: 36px;
+  background: #ded8ba;
+  border: 5px solid white;
+}
+.profile-card > div {
+  flex: 1;
+}
+.profile-card h1 {
+  font-size: 32px;
+  margin: 8px 0;
+}
+.profile-card p {
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.profile-card .progress {
+  max-width: 320px;
+  margin-bottom: 8px;
+}
+.profile-card .button {
+  font-size: 11px;
+}
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 30px 0;
+  margin: 10px 0 25px;
+  border-bottom: 1px solid var(--border);
+}
+.profile-stats > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border-right: 1px solid var(--border);
+}
+.profile-stats > div:last-child {
+  border: 0;
+}
+.profile-stats strong {
+  font-size: 30px;
+}
+.profile-stats span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.profile-card ~ section {
+  margin: 35px 0;
+}
+.achievement-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.achievement-card {
+  padding: 25px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #f0f2e9;
+  text-align: center;
+}
+.achievement-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 65px;
+  height: 65px;
+  border: 1px dashed #a4b097;
+  border-radius: 50%;
+  margin-bottom: 18px;
+  color: #89957d;
+}
+.achievement-card.unlocked {
+  background: #f9efc9;
+  border-color: #e3d69f;
+}
+.achievement-card.unlocked .achievement-icon {
+  background: var(--yellow);
+  color: var(--forest);
+  border-color: #9f934c;
+}
+.achievement-card h3 {
+  font-size: 17px;
+}
+.achievement-card p {
+  font-size: 11px;
+  margin: 8px 0 16px;
+}
+.achievement-card > span:not(.achievement-icon) {
+  font-size: 11px;
+  display: block;
+  margin-bottom: 12px;
+}
+.profile-links {
+  display: grid;
+  gap: 10px;
+  margin-top: 30px;
+}
+.profile-links > a {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  padding: 18px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  font-size: 13px;
+}
+.profile-links > a svg:last-child {
+  margin-left: auto;
+}
+.preferences-page,
+.settings-page {
+  max-width: 800px;
+  margin: auto;
+}
+.settings-form {
+  padding: 30px;
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 15px;
+}
+.settings-form .filter-fields {
+  margin: 25px 0;
+}
+.settings-group {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+}
+.settings-group h2 {
+  font-size: 23px;
+}
+.settings-group p {
+  font-size: 13px;
+  margin: 13px 0 20px;
+}
+.pack-hero {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  min-height: 300px;
+  background: #e7eedf;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-bottom: 35px;
+}
+.pack-hero > img {
+  max-height: 380px;
+}
+.pack-progress {
+  padding: 32px;
+}
+.pack-progress h2 {
+  margin: 15px 0;
+  font-size: 26px;
+}
+.pack-progress p {
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+.pack-progress .button {
+  margin-top: 25px;
+}
+.image-fallback {
+  background-color: #dce6d8;
+  background-image: radial-gradient(
+    circle at 35% 45%,
+    #bbcdb4 0,
+    transparent 50%
+  );
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.55;
+  }
+}

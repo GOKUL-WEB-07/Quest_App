@@ -1,0 +1,260 @@
+.continue-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #e8eedf;
+  border: 1px solid #d8e3cc;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 24px;
+}
+.round-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  background: var(--sage);
+  color: var(--forest);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.continue-banner > div {
+  flex: 1;
+}
+.continue-banner small {
+  color: var(--muted);
+  font-size: 10px;
+}
+.continue-banner h3 {
+  margin: 5px 0 9px;
+}
+.continue-banner > span:last-child {
+  font-size: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.progress {
+  height: 5px;
+  width: 100%;
+  border-radius: 5px;
+  background: #e2e8d9;
+  overflow: hidden;
+}
+.progress > span {
+  display: block;
+  height: 100%;
+  background: #527544;
+  transition: width 200ms;
+}
+.page-heading {
+  margin-bottom: 32px;
+}
+.page-heading p {
+  font-size: 13px;
+  margin-top: 12px;
+}
+.page-heading .section-heading {
+  margin: 0;
+}
+.page-heading h1 {
+  max-width: 800px;
+}
+.empty-state {
+  text-align: center;
+  padding: 72px 20px;
+  max-width: 580px;
+  margin: auto;
+}
+.empty-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  background: var(--sage);
+  border-radius: 50%;
+  margin-bottom: 25px;
+}
+.empty-state h2 {
+  font-size: 26px;
+}
+.empty-state p {
+  font-size: 14px;
+  margin: 15px 0 25px;
+}
+.toast {
+  position: fixed;
+  bottom: 25px;
+  left: calc(50% + 112px);
+  transform: translateX(-50%);
+  z-index: var(--z-toast);
+  background: var(--forest);
+  color: white;
+  padding: 14px 22px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  max-width: calc(100% - 32px);
+}
+.notice {
+  background: #fbf0c9;
+  padding: 12px 20px;
+  font-size: 12px;
+  color: #5e542e;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.notice.error {
+  background: #fbe6e2;
+  color: var(--error);
+}
+.notice > span {
+  flex: 1;
+}
+.notice button {
+  background: transparent;
+  border: 0;
+  min-height: 44px;
+  text-decoration: underline;
+}
+.inline-error {
+  background: #fbe6e2;
+  color: var(--error);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.modal {
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 28px;
+  width: min(560px, calc(100% - 32px));
+  max-height: 85vh;
+  overflow: auto;
+  box-shadow: 0 20px 80px #15271c33;
+}
+.modal::backdrop {
+  background: #17261c88;
+  backdrop-filter: blur(3px);
+}
+.modal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 15px;
+}
+.modal-top h2 {
+  font-size: 23px;
+}
+.modal p {
+  font-size: 13px;
+}
+.modal form {
+  margin-top: 16px;
+}
+.flow-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 27px;
+}
+.flow-actions .button:last-child {
+  margin-left: auto;
+}
+.filter-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.filter-fields label {
+  margin: 0;
+}
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 750;
+  margin-bottom: 20px;
+}
+input:not([type="checkbox"]):not([type="file"]),
+select,
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid #d7dfd0;
+  border-radius: 8px;
+  padding: 11px 13px;
+  background: white;
+  color: var(--ink);
+  margin-top: 8px;
+  font-size: 14px;
+}
+textarea {
+  resize: vertical;
+}
+select {
+  text-transform: capitalize;
+}
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 24px;
+}
+legend {
+  font-size: 12px;
+  font-weight: 750;
+  margin-bottom: 14px;
+}
+.spinner {
+  width: 17px;
+  height: 17px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 800ms linear infinite;
+}
+.skeleton-page {
+  padding: 35px;
+  max-width: 1200px;
+  margin: auto;
+  width: 100%;
+}
+.skeleton {
+  background: #e6ebdf;
+  animation: pulse 1.2s ease-in-out infinite;
+  border-radius: 12px;
+}
+.skeleton.heading {
+  width: 65%;
+  height: 50px;
+  margin-bottom: 25px;
+}
+.skeleton.hero {
+  height: 320px;
+  margin-bottom: 25px;
+}
+.skeleton.card {
+  height: 240px;
+}
+.splash {
+  min-height: 100vh;
+  padding: 10vh 5vw;
+}
+.splash > .brand {
+  justify-content: center;
+}
+.fatal-error {
+  text-align: center;
+  padding: 20vh 20px;
+}
+.fatal-error p {
+  margin: 20px;
+}

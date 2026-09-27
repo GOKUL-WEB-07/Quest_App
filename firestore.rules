@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function owner(uid) { return signedIn() && request.auth.uid == uid; }
+    function ownsExisting() { return owner(resource.data.userId); }
+    function createsOwn() { return owner(request.resource.data.userId); }
+    function keepsOwner() { return ownsExisting() && request.resource.data.userId == resource.data.userId; }
+    function admin() { return signedIn() && request.auth.token.admin == true; }
+    match /quests/{id} {
+      allow read: if resource.data.status == 'published' || admin();
+      allow write: if admin();
+    }
+    match /questPacks/{id} { allow read: if resource.data.status == 'published' || admin(); allow write: if admin(); }
+    match /achievements/{id} { allow read: if true; allow write: if admin(); }
+    match /users/{uid} {
+      allow read, delete: if owner(uid);
+      allow create, update: if owner(uid)
+        && request.resource.data.keys().hasOnly(['id','displayName','email','xp','level','interests','preferences','onboardingCompleted','createdAt','updatedAt'])
+        && request.resource.data.id == uid
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() > 0
+        && request.resource.data.displayName.size() <= 40
+        && request.resource.data.xp is int && request.resource.data.xp >= 0
+        && request.resource.data.level is int && request.resource.data.level >= 1
+        && request.resource.data.interests is list && request.resource.data.interests.size() <= 30
+        && request.resource.data.preferences is map
+        && request.resource.data.onboardingCompleted is bool;
+    }
+    match /userQuests/{id} {
+      allow read, delete: if ownsExisting();
+      allow create: if createsOwn() && validProgress();
+      allow update: if keepsOwner() && validProgress() && request.resource.data.questId == resource.data.questId;
+      function validProgress() {
+        return request.resource.data.keys().hasOnly(['id','userId','questId','status','completedSteps','startedAt','completedAt','surprise'])
+          && request.resource.data.id == id
+          && request.resource.data.questId is string
+          && request.resource.data.status in ['viewed','saved','active','completed','skipped','abandoned']
+          && request.resource.data.completedSteps is list && request.resource.data.completedSteps.size() <= 30
+          && request.resource.data.surprise is bool;
+      }
+    }
+    match /memories/{id} {
+      allow read, delete: if ownsExisting();
+      allow create: if createsOwn() && validMemory();
+      allow update: if keepsOwner() && validMemory() && request.resource.data.questId == resource.data.questId;
+      function validMemory() {
+        return request.resource.data.keys().hasOnly(['id','userId','questId','title','note','images','rating','location','completedAt','createdAt'])
+          && request.resource.data.id == id
+          && request.resource.data.title is string && request.resource.data.title.size() <= 100
+          && request.resource.data.note is string && request.resource.data.note.size() <= 2000
+          && request.resource.data.images is list && request.resource.data.images.size() <= 1
+          && request.resource.data.rating is int && request.resource.data.rating >= 0 && request.resource.data.rating <= 5
+          && request.resource.data.location is map;
+      }
+    }
+    match /favorites/{id} {
+      allow read, delete: if ownsExisting();
+      allow create: if createsOwn() && request.resource.data.keys().hasOnly(['userId','questId']) && request.resource.data.questId is string;
+      allow update: if keepsOwner() && request.resource.data == resource.data;
+    }
+    match /userAchievements/{id} { allow read: if ownsExisting(); allow write: if admin(); }
+    match /safetyReports/{id} {
+      allow read: if ownsExisting() || admin();
+      allow create: if createsOwn() && request.resource.data.keys().hasOnly(['id','userId','questId','reason','createdAt'])
+        && request.resource.data.id == id && request.resource.data.questId is string
+        && request.resource.data.reason is string && request.resource.data.reason.size() >= 10 && request.resource.data.reason.size() <= 2000;
+      allow update, delete: if admin();
+    }
+  }
+}
