@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
+import { canInstall, installApp, subscribeInstall } from "../../services/installService";
 import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../../stores/AppProvider";
 import { Button, Icon, Modal, PageHeader } from "../../components/ui";
@@ -8,6 +9,7 @@ export default function Settings() {
   const { data, mutate, notify } = useApp();
   const navigate = useNavigate();
   const [reset, setReset] = useState(false);
+  const installAvailable = useSyncExternalStore(subscribeInstall, canInstall, () => false);
   function exportData() {
     const url = URL.createObjectURL(
       new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }),
@@ -39,9 +41,17 @@ export default function Settings() {
       </div>
       <div className="settings-group">
         <h2>Install SideQuest</h2>
+        {installAvailable && (
+          <Button onClick={async () => {
+            try { await installApp(); }
+            catch { notify("Use your browser menu to install SideQuest."); }
+          }}>Install SideQuest</Button>
+        )}
         <p>
-          Open this site in your browser, then choose Install app or Add to Home
-          Screen from the browser menu. On iPhone or iPad, use Safari’s Share
+          On Android, open this site in a normal Chrome tab. Tap the three-dot
+          menu, then Add to Home screen and Install (or Install app). If you
+          opened the link inside another app, open it in Chrome first.
+          Installation is unavailable in Incognito mode. On iPhone or iPad, use Safari’s Share
           button and choose Add to Home Screen. The installed app opens on its
           own and works offline after its first load.
         </p>
