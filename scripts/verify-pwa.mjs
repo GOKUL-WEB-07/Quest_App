@@ -2,11 +2,13 @@ import assert from "node:assert/strict";
 import { chromium } from "playwright";
 
 const origin = process.env.SIDEQUEST_URL || "http://127.0.0.1:4173";
+const base = process.env.SIDEQUEST_PAGES ? "/Quest_App/" : "/";
+const route = (name) => `${origin}${base}${process.env.SIDEQUEST_PAGES ? "#/" : ""}${name}`;
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 try {
   const context = await browser.newContext();
   const page = await context.newPage();
-  await page.goto(`${origin}/home`);
+  await page.goto(process.env.SIDEQUEST_PAGES ? `${origin}${base}` : route("home"));
   await page
     .getByRole("heading", { name: /sidequest|today|adventure/i })
     .first()
@@ -19,7 +21,8 @@ try {
     return response.json();
   });
   assert.equal(manifest.display, "standalone");
-  assert.equal(manifest.start_url, "/home");
+  assert.equal(manifest.start_url, `${base}${process.env.SIDEQUEST_PAGES ? "#/" : ""}home`);
+  assert.equal(manifest.scope, base);
   assert.ok(manifest.icons.some((icon) => icon.sizes === "192x192"));
   assert.ok(manifest.icons.some((icon) => icon.sizes === "512x512"));
   for (const icon of manifest.icons) {
@@ -39,7 +42,8 @@ try {
   assert.ok(cacheCount > 20, `Expected app files cached, found ${cacheCount}`);
 
   await context.setOffline(true);
-  await page.goto(`${origin}/discover`);
+  await page.goto(route("discover"));
+  await page.reload();
   await page.getByRole("heading", { name: "Follow your curiosity." }).waitFor();
   console.log(
     `PWA verified: manifest, icons, ${cacheCount} cached files, offline deep link.`,

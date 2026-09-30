@@ -1,5 +1,5 @@
 import { Component, Suspense, lazy, type ReactNode } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AppProvider } from "../stores/AppProvider";
 import { Shell } from "../components/layout/Shell";
 import { EmptyState, SkeletonLoader } from "../components/ui";
@@ -96,13 +96,14 @@ function Router() {
   );
 }
 export default function App() {
+  const AppRouter = import.meta.env.MODE === "github" ? HashRouter : BrowserRouter;
   return (
     <ErrorBoundary>
-      <BrowserRouter>
+      <AppRouter>
         <AppProvider>
           <Router />
         </AppProvider>
-      </BrowserRouter>
+      </AppRouter>
     </ErrorBoundary>
   );
 }

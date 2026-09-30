@@ -17,6 +17,8 @@ Open the address printed by Vite. SideQuest opens directly to Home. It needs no 
 
 ## Install from a browser
 
+GitHub Pages deploys automatically from `main` using `.github/workflows/deploy.yml`. In repository **Settings → Pages**, the source must be **GitHub Actions**. The workflow runs `npm run build:pages`, which builds for `/Quest_App/` and uses hash routes so refreshing a screen works on GitHub Pages. Share https://gokul-web-07.github.io/Quest_App/ after deployment succeeds. Other hosting platforms continue to use `npm run build`.
+
 Build and host the `dist` folder over HTTPS, then open the site on each device. On Android, choose **Install app** or **Add to Home screen** from Chrome’s menu. On Windows or macOS, use the install icon in Chrome or Edge’s address bar. On iPhone or iPad, open the site in Safari, tap **Share**, then **Add to Home Screen**. To try installation on this computer, run `npm.cmd run build` followed by `npm.cmd run preview` and use the preview address. A phone cannot install from the computer’s `127.0.0.1` address; it needs a hosted HTTPS site.
 
 The production build includes a web app manifest, your black-on-white Q icon, and an offline service worker. After the first online visit, the installed app can open its bundled screens offline. Each browser and device has a separate journal; installation does not sync data across devices. Export a backup from Settings before moving to another device.

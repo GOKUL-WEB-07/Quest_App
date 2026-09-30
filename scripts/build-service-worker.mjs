@@ -4,6 +4,14 @@ import { join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const dist = fileURLToPath(new URL("../dist/", import.meta.url));
+const base = process.argv.includes("--pages") ? "/Quest_App/" : "/";
+const manifestPath = join(dist, "manifest.webmanifest");
+const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+manifest.id = base;
+manifest.scope = base;
+manifest.start_url = `${base}${base === "/" ? "home" : "#/home"}`;
+manifest.icons = manifest.icons.map((icon) => ({ ...icon, src: `${base}${icon.src.replace(/^\//, "")}` }));
+await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
 
 async function filesIn(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -18,7 +26,7 @@ async function filesIn(directory) {
 
 const files = (await filesIn(dist)).filter((file) => !file.endsWith("sw.js"));
 const urls = files.map(
-  (file) => `/${relative(dist, file).split(sep).join("/")}`,
+  (file) => `${base}${relative(dist, file).split(sep).join("/")}`,
 );
 const hash = createHash("sha256");
 for (const file of files) {
@@ -27,7 +35,8 @@ for (const file of files) {
 }
 const version = hash.digest("hex").slice(0, 12);
 
-const worker = `const CACHE = "sidequest-${version}";
+const worker = `const PREFIX = ${JSON.stringify(`sidequest-${base}-`)};
+const CACHE = PREFIX + "${version}";
 const PRECACHE = ${JSON.stringify(urls)};
 const ASSETS = new Set(PRECACHE);
 
@@ -38,7 +47,7 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(Promise.all([
-    caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith("sidequest-") && key !== CACHE).map((key) => caches.delete(key)))),
+    caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith(PREFIX) && key !== CACHE).map((key) => caches.delete(key)))),
     self.clients.claim(),
   ]));
 });
@@ -52,7 +61,7 @@ self.addEventListener("fetch", (event) => {
   if (request.mode === "navigate") {
     event.respondWith(fetch(request).catch(async () => {
       const cache = await caches.open(CACHE);
-      return (await cache.match("/index.html")) || Response.error();
+      return (await cache.match(${JSON.stringify(`${base}index.html`)})) || Response.error();
     }));
     return;
   }

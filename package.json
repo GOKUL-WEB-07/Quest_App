@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build:pages": "tsc -b && vite build --mode github --configLoader runner && node scripts/build-service-worker.mjs --pages",
     "dev": "vite --configLoader runner --host 127.0.0.1",
     "build": "tsc -b && vite build --configLoader runner && node scripts/build-service-worker.mjs",
     "preview": "vite preview --configLoader runner --host 127.0.0.1",
