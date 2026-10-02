@@ -37,7 +37,9 @@ export default function ActiveQuest() {
   const { data, mutate } = useApp();
   const navigate = useNavigate();
   const [confirm, setConfirm] = useState(false),
-    [timer, setTimer] = useState(false);
+    [timer, setTimer] = useState(
+      () => questId?.startsWith("learning-") || false,
+    );
   const quest = quests.find((q) => q.id === questId),
     progress = questId ? data.progress[questId] : undefined;
   if (!quest || !progress || progress.status !== "active")
@@ -88,6 +90,7 @@ export default function ActiveQuest() {
           {quest.category}
         </span>
         <h1>{quest.title}</h1>
+        {quest.id.startsWith("learning-") && <p>{quest.description}</p>}
         <div className="active-progress">
           <strong>
             {count} of {quest.steps.length} discovered

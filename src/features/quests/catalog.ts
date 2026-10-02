@@ -1,4 +1,5 @@
 import type { Category, Quest, QuestPack } from "../../types";
+import { learningQuests } from "./learning";
 
 export const photos = {
   forest:
@@ -584,67 +585,72 @@ const seeds: Seed[] = [
     "Nature",
   ],
 ];
-export const quests: Quest[] = seeds.map(
-  ([
-    id,
-    title,
-    category,
-    duration,
-    description,
-    steps,
-    requirements,
-    locationTypes,
-    image,
-    subcategory,
-  ]) => ({
-    id,
-    title,
-    category,
-    duration,
-    description,
-    steps,
-    requirements,
-    locationTypes,
-    coverImage: image || photos.forest,
-    subcategory: subcategory || category,
-    difficulty:
-      duration >= 180
-        ? "epic"
-        : duration >= 120
-          ? "hard"
-          : duration >= 60
-            ? "medium"
-            : "easy",
-    energy:
-      category === "Chill" || category === "Learn"
-        ? "low"
-        : category === "Play"
-          ? "high"
-          : "medium",
-    participants:
-      category === "Social" ? ["friends", "pair"] : ["solo", "friends", "pair"],
-    budget: "free",
-    xp:
-      id === "shadow-hunter"
-        ? 40
-        : duration >= 180
-          ? 120
+export const quests: Quest[] = [
+  ...seeds.map<Quest>(
+    ([
+      id,
+      title,
+      category,
+      duration,
+      description,
+      steps,
+      requirements,
+      locationTypes,
+      image,
+      subcategory,
+    ]) => ({
+      id,
+      title,
+      category,
+      duration,
+      description,
+      steps,
+      requirements,
+      locationTypes,
+      coverImage: image || photos.forest,
+      subcategory: subcategory || category,
+      difficulty:
+        duration >= 180
+          ? "epic"
           : duration >= 120
-            ? 70
+            ? "hard"
             : duration >= 60
-              ? 40
-              : 20,
-    tags: [category.toLowerCase(), (subcategory || category).toLowerCase()],
-    status: "published",
-    createdAt: "2026-09-01T00:00:00.000Z",
-    ...(locationTypes.some((l) => ["Outside", "City"].includes(l))
-      ? {
-          safetyNote:
-            "Use public, accessible spaces. Stay aware of your surroundings, respect others’ privacy, and choose a route that feels safe for you.",
-        }
-      : {}),
-  }),
-);
+              ? "medium"
+              : "easy",
+      energy:
+        category === "Chill" || category === "Learn"
+          ? "low"
+          : category === "Play"
+            ? "high"
+            : "medium",
+      participants:
+        category === "Social"
+          ? ["friends", "pair"]
+          : ["solo", "friends", "pair"],
+      budget: "free",
+      xp:
+        id === "shadow-hunter"
+          ? 40
+          : duration >= 180
+            ? 120
+            : duration >= 120
+              ? 70
+              : duration >= 60
+                ? 40
+                : 20,
+      tags: [category.toLowerCase(), (subcategory || category).toLowerCase()],
+      status: "published",
+      createdAt: "2026-09-01T00:00:00.000Z",
+      ...(locationTypes.some((l) => ["Outside", "City"].includes(l))
+        ? {
+            safetyNote:
+              "Use public, accessible spaces. Stay aware of your surroundings, respect others’ privacy, and choose a route that feels safe for you.",
+          }
+        : {}),
+    }),
+  ),
+  ...learningQuests,
+];
 export const packs: QuestPack[] = [
   {
     id: "creative-reset",

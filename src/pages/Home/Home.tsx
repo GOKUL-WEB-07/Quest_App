@@ -59,6 +59,13 @@ export default function Home() {
           </span>
         </div>
       </header>
+      <section className="settings-group">
+        <h2>A little time, a new skill.</h2>
+        <p>Choose a topic and spend 5–30 minutes learning something new.</p>
+        <Link className="button secondary" to="/learn">
+          Find a learning task
+        </Link>
+      </section>
       <div className="home-feature-grid">
         <Link to="/quest/micro-adventure" className="feature-hero">
           <CoverImage src={photos.forest} eager />

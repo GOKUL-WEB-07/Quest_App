@@ -67,6 +67,10 @@ export default function QuestDetail() {
   }
   function reroll() {
     if (!quest) return;
+    if (quest.id.startsWith("learning-")) {
+      navigate("/learn");
+      return;
+    }
     track("quest_skipped", { questId: quest.id });
     const next = recommend(quests, {
       category: params.get("surprise") ? "" : quest.category,

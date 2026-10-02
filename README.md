@@ -25,7 +25,7 @@ The production build includes a web app manifest, your black-on-white Q icon, an
 
 ## How it works
 
-React, Vite, strict TypeScript, React Router, and modular CSS form the frontend. The 32 published quests and six packs are bundled for immediate browsing. `AppProvider` owns one personal journal in browser storage; progress records never modify the master quest catalog. `src/services/` contains quest recommendations, progress, local persistence, image compression, and analytics event abstractions. Screens load by route. The app has no login, sign-up, or account prompt.
+React, Vite, strict TypeScript, React Router, and modular CSS form the frontend. The 62 published quests (including 30 timed learning tasks) and six packs are bundled for immediate browsing. `AppProvider` owns one personal journal in browser storage; progress records never modify the master quest catalog. `src/services/` contains quest recommendations, progress, local persistence, image compression, and analytics event abstractions. Screens load by route. The app has no login, sign-up, or account prompt.
 
 ```text
 src/

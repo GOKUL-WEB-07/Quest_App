@@ -3,6 +3,41 @@ import { quests } from "../src/features/quests/catalog";
 import { filterQuests, recommend } from "../src/services/recommendationService";
 import { completeQuest, createData } from "../src/services/userService";
 import { achievements } from "../src/services/achievementService";
+import {
+  learningQuests,
+  learningTopics,
+  learningMatches,
+} from "../src/features/quests/learning";
+describe("Timed learning", () => {
+  it("offers 30 distinct lessons with five tasks per topic", () => {
+    expect(learningQuests).toHaveLength(30);
+    expect(new Set(learningQuests.map((q) => q.title)).size).toBe(30);
+    for (const topic of learningTopics)
+      expect(
+        learningQuests.filter((q) => q.subcategory === topic),
+      ).toHaveLength(5);
+    for (const q of learningQuests) {
+      const minutes = q.steps.reduce(
+        (sum, step) => sum + Number(step.match(/(\d+) min/)?.[1]),
+        0,
+      );
+      expect(minutes).toBe(q.duration);
+      expect(quests.some((item) => item.id === q.id)).toBe(true);
+    }
+  });
+  it("respects topic, available time, and completed work", () => {
+    const matches = learningMatches("Coding", 15, ["learning-1"]);
+    expect(matches.map((q) => q.id)).toEqual(["learning-2", "learning-3"]);
+    expect(learningMatches("Science", 4, [])).toHaveLength(0);
+    expect(
+      learningMatches(
+        "",
+        30,
+        learningQuests.map((q) => q.id),
+      ),
+    ).toHaveLength(0);
+  });
+});
 describe("Published catalog", () => {
   it("contains 30+ usable, distinct quests across every category", () => {
     expect(quests.length).toBeGreaterThanOrEqual(30);

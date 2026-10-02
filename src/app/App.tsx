@@ -1,9 +1,16 @@
 import { Component, Suspense, lazy, type ReactNode } from "react";
-import { BrowserRouter, HashRouter, Navigate, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  HashRouter,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
 import { AppProvider } from "../stores/AppProvider";
 import { Shell } from "../components/layout/Shell";
 import { EmptyState, SkeletonLoader } from "../components/ui";
 const Home = lazy(() => import("../pages/Home/Home"));
+const Learning = lazy(() => import("../features/quests/LearningFinder"));
 const Onboarding = lazy(() => import("../features/onboarding/Onboarding"));
 const QuickQuest = lazy(() => import("../features/quests/QuickQuest"));
 const QuestDetail = lazy(() => import("../features/quests/QuestDetail"));
@@ -62,6 +69,7 @@ function Router() {
         <Route path="/onboarding/preferences" element={<Onboarding />} />
         <Route element={<Shell />}>
           <Route path="/home" element={<Home />} />
+          <Route path="/learn" element={<Learning />} />
           <Route path="/discover" element={<Discover />} />
           <Route path="/discover/:category" element={<Discover />} />
           <Route path="/search" element={<Discover />} />
@@ -96,7 +104,8 @@ function Router() {
   );
 }
 export default function App() {
-  const AppRouter = import.meta.env.MODE === "github" ? HashRouter : BrowserRouter;
+  const AppRouter =
+    import.meta.env.MODE === "github" ? HashRouter : BrowserRouter;
   return (
     <ErrorBoundary>
       <AppRouter>
