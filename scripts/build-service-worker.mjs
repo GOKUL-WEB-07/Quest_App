@@ -11,6 +11,7 @@ manifest.id = base;
 manifest.scope = base;
 manifest.start_url = `${base}${base === "/" ? "home" : "#/home"}`;
 manifest.icons = manifest.icons.map((icon) => ({ ...icon, src: `${base}${icon.src.replace(/^\//, "")}` }));
+if (manifest.screenshots) manifest.screenshots = manifest.screenshots.map((screenshot) => ({...screenshot, src: `${base}${screenshot.src.replace(/^\//, "")}`}));
 await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
 
 async function filesIn(directory) {
