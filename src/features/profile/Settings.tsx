@@ -1,5 +1,9 @@
 import { useState, useSyncExternalStore } from "react";
-import { canInstall, installApp, subscribeInstall } from "../../services/installService";
+import {
+  canInstall,
+  installApp,
+  subscribeInstall,
+} from "../../services/installService";
 import { Link, useNavigate } from "react-router-dom";
 import { useApp } from "../../stores/AppProvider";
 import { Button, Icon, Modal, PageHeader } from "../../components/ui";
@@ -9,7 +13,12 @@ export default function Settings() {
   const { data, mutate, notify } = useApp();
   const navigate = useNavigate();
   const [reset, setReset] = useState(false);
-  const installAvailable = useSyncExternalStore(subscribeInstall, canInstall, () => false);
+  const [installMessage, setInstallMessage] = useState("");
+  const installAvailable = useSyncExternalStore(
+    subscribeInstall,
+    canInstall,
+    () => false,
+  );
   function exportData() {
     const url = URL.createObjectURL(
       new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }),
@@ -42,18 +51,36 @@ export default function Settings() {
       <div className="settings-group">
         <h2>Install SideQuest</h2>
         {installAvailable && (
-          <Button onClick={async () => {
-            try { await installApp(); }
-            catch { notify("Use your browser menu to install SideQuest."); }
-          }}>Install SideQuest</Button>
+          <Button
+            onClick={async () => {
+              setInstallMessage("Confirm installation in Chrome’s prompt.");
+              try {
+                const result = await installApp();
+                setInstallMessage(
+                  result === "accepted"
+                    ? "Chrome accepted your request. Wait for Android to finish, then look for SideQuest in your apps. This does not download an APK file."
+                    : result === "dismissed"
+                      ? "Installation was cancelled. To retry, use Chrome’s menu → Add to Home screen → Install."
+                      : "Chrome’s install prompt is no longer available. Use its menu → Add to Home screen → Install.",
+                );
+              } catch {
+                setInstallMessage(
+                  "Chrome could not open installation. Try its menu → Add to Home screen → Install. If Chrome displays an error, share that exact message.",
+                );
+              }
+            }}
+          >
+            Install SideQuest
+          </Button>
         )}
+        {installMessage && <p role="status">{installMessage}</p>}
         <p>
           On Android, open this site in a normal Chrome tab. Tap the three-dot
           menu, then Add to Home screen and Install (or Install app). If you
           opened the link inside another app, open it in Chrome first.
-          Installation is unavailable in Incognito mode. On iPhone or iPad, use Safari’s Share
-          button and choose Add to Home Screen. The installed app opens on its
-          own and works offline after its first load.
+          Installation is unavailable in Incognito mode. On iPhone or iPad, use
+          Safari’s Share button and choose Add to Home Screen. The installed app
+          opens on its own and works offline after its first load.
         </p>
         <p>
           Each device keeps a separate journal. Export a backup before switching

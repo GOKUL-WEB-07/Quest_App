@@ -16,14 +16,60 @@ import {
 } from "../../services/recommendationService";
 import { track } from "../../services/analyticsService";
 import type { QuestContext } from "../../types";
+import LearningFinder from "./LearningFinder";
 export default function QuickQuest() {
+  const [params, setParams] = useSearchParams();
+  const kind = params.get("kind");
+  if (params.get("surprise") === "1") return <TaskFinder />;
+  if (kind === "learning") return <LearningFinder />;
+  if (kind === "task") return <TaskFinder />;
+  return (
+    <div className="quick-page">
+      <PageHeader
+        title="What kind of quest?"
+        description="First, choose what you want to do. We’ll tailor the next choices to you."
+        back="/home"
+      />
+      <div className="quick-panel">
+        <h2>Task or learning quest?</h2>
+        <div className="quick-options">
+          <Button
+            onClick={() => {
+              const next = new URLSearchParams(params);
+              next.set("kind", "task");
+              setParams(next);
+            }}
+          >
+            Task
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              const next = new URLSearchParams(params);
+              next.set("kind", "learning");
+              setParams(next);
+            }}
+          >
+            Learning quest
+          </Button>
+        </div>
+        <p>Task: choose your mood, time, and place for an activity.</p>
+        <p>
+          Learning quest: choose a topic and time for a short lesson with
+          practice.
+        </p>
+      </div>
+    </div>
+  );
+}
+function TaskFinder() {
   const { data } = useApp();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const surprise = params.get("surprise") === "1";
   const initialMood =
     Object.entries(moodCategories).find(
-      ([, v]) => v === params.get("category"),
+      ([, v]) => v !== "Learn" && v === params.get("category"),
     )?.[0] || "";
   const [step, setStep] = useState(initialMood ? 1 : 0),
     [context, setContext] = useState<QuestContext>({
@@ -43,13 +89,16 @@ export default function QuickQuest() {
     setGenerating(true);
     setNoMatch(false);
     if (chaos) track("chaos_used");
-    const quest = recommend(quests, {
-      ...(chaos ? {} : context),
-      interests: data.profile.interests,
-      recentIds: Object.values(data.progress)
-        .filter((p) => p.status === "completed")
-        .map((p) => p.questId),
-    });
+    const quest = recommend(
+      surprise ? quests : quests.filter((q) => q.category !== "Learn"),
+      {
+        ...(chaos ? {} : context),
+        interests: data.profile.interests,
+        recentIds: Object.values(data.progress)
+          .filter((p) => p.status === "completed")
+          .map((p) => p.questId),
+      },
+    );
     timer.current = setTimeout(() => {
       if (quest)
         navigate(`/quest/${quest.id}${chaos ? "?surprise=1" : ""}`, {
@@ -108,7 +157,7 @@ export default function QuickQuest() {
       <PageHeader
         title="Find your next little adventure."
         description="A few quick choices. A world of possibilities."
-        back="/home"
+        back="/quest/generate"
       />
       <div className="quick-panel">
         <div className="step-caption">
@@ -140,8 +189,9 @@ export default function QuickQuest() {
         <div className="quick-options">
           {step === 0
             ? Object.keys(moodCategories)
+                .filter((m) => m !== "Curious")
                 .concat("Surprise me")
-                .map((m, i) => (
+                .map((m) => (
                   <Chip
                     key={m}
                     selected={context.mood === m}
@@ -157,7 +207,7 @@ export default function QuickQuest() {
                           "people",
                           "zap",
                           "sparkles",
-                        ][i]
+                        ][m === "Surprise me" ? 6 : Object.keys(moodCategories).indexOf(m)]
                       }
                     />
                     {m}

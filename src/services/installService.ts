@@ -9,6 +9,7 @@ const emit = () => listeners.forEach((listener) => listener());
 
 // Capture the event at startup, before the lazy Settings screen is opened.
 window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
   pending = event as InstallPrompt;
   emit();
 });
@@ -20,11 +21,13 @@ window.addEventListener("appinstalled", () => {
 export const canInstall = () => pending !== null;
 export function subscribeInstall(listener: () => void) {
   listeners.add(listener);
-  return () => { listeners.delete(listener); };
+  return () => {
+    listeners.delete(listener);
+  };
 }
 export async function installApp() {
   const prompt = pending;
-  if (!prompt) return;
+  if (!prompt) return "unavailable";
   pending = null;
   emit();
   await prompt.prompt();

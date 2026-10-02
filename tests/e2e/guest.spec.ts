@@ -20,7 +20,7 @@ test("personal setup, discovery, persistent quest, completion, photo memory, sav
     page.getByRole("heading", { name: "Make today a little less ordinary." }),
   ).toBeVisible();
   await page.goto("/discover");
-  await page.getByRole("searchbox", { name: "Search quests" }).fill("shadow");
+  await page.getByRole("searchbox", { name: "Search quests" }).fill("Shadow hunter");
   await expect(page.locator(".quest-card")).toHaveCount(1);
   await page
     .getByRole("button", { name: "Save Shadow hunter", exact: true })
@@ -79,6 +79,7 @@ test("personal setup, discovery, persistent quest, completion, photo memory, sav
     page.getByRole("link", { name: "Start pack", exact: true }),
   ).toBeVisible();
   await page.goto("/quest/generate");
+  await page.getByRole("button", { name: "Task", exact: true }).click();
   await page.getByRole("button", { name: "Relaxed", exact: true }).click();
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await page.getByRole("button", { name: "5 min", exact: true }).click();

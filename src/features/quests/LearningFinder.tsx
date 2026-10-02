@@ -24,7 +24,7 @@ export default function LearningFinder() {
       <PageHeader
         title="Learn something in a little time."
         description="30 short learning tasks. Choose your topic and time; we’ll pick something for you."
-        back="/home"
+        back="/quest/generate"
       />
       <div className="quick-panel">
         <h2>What would you like to learn?</h2>
