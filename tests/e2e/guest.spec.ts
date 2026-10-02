@@ -79,6 +79,16 @@ test("personal setup, discovery, persistent quest, completion, photo memory, sav
     page.getByRole("link", { name: "Start pack", exact: true }),
   ).toBeVisible();
   await page.goto("/quest/generate");
+  await expect(page.getByText("Step 1 of 4")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Task", exact: true })).toHaveClass(/secondary/);
+  await expect(page.getByRole("button", { name: "Learning quest", exact: true })).toHaveClass(/secondary/);
+  await page.getByRole("button", { name: "Task", exact: true }).click();
+  await expect(page.getByText("Step 2 of 4")).toBeVisible();
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await expect(page.getByText("Step 1 of 4")).toBeVisible();
+  await page.getByRole("button", { name: "Learning quest", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "What would you like to learn?" })).toBeVisible();
+  await page.goto("/quest/generate");
   await page.getByRole("button", { name: "Task", exact: true }).click();
   await page.getByRole("button", { name: "Relaxed", exact: true }).click();
   await page.getByRole("button", { name: "Next", exact: true }).click();

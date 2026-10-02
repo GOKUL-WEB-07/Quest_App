@@ -18,60 +18,25 @@ import { track } from "../../services/analyticsService";
 import type { QuestContext } from "../../types";
 import LearningFinder from "./LearningFinder";
 export default function QuickQuest() {
-  const [params, setParams] = useSearchParams();
-  const kind = params.get("kind");
-  if (params.get("surprise") === "1") return <TaskFinder />;
-  if (kind === "learning") return <LearningFinder />;
-  if (kind === "task") return <TaskFinder />;
-  return (
-    <div className="quick-page">
-      <PageHeader
-        title="What kind of quest?"
-        description="First, choose what you want to do. We’ll tailor the next choices to you."
-        back="/home"
-      />
-      <div className="quick-panel">
-        <h2>Task or learning quest?</h2>
-        <div className="quick-options">
-          <Button
-            onClick={() => {
-              const next = new URLSearchParams(params);
-              next.set("kind", "task");
-              setParams(next);
-            }}
-          >
-            Task
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              const next = new URLSearchParams(params);
-              next.set("kind", "learning");
-              setParams(next);
-            }}
-          >
-            Learning quest
-          </Button>
-        </div>
-        <p>Task: choose your mood, time, and place for an activity.</p>
-        <p>
-          Learning quest: choose a topic and time for a short lesson with
-          practice.
-        </p>
-      </div>
-    </div>
+  const [params] = useSearchParams();
+  return params.get("kind") === "learning" ? (
+    <LearningFinder />
+  ) : (
+    <TaskFinder />
   );
 }
 function TaskFinder() {
   const { data } = useApp();
   const navigate = useNavigate();
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const surprise = params.get("surprise") === "1";
   const initialMood =
     Object.entries(moodCategories).find(
       ([, v]) => v !== "Learn" && v === params.get("category"),
     )?.[0] || "";
-  const [step, setStep] = useState(initialMood ? 1 : 0),
+  const [step, setStep] = useState(
+      params.get("kind") === "task" || surprise ? (initialMood ? 1 : 0) : -1,
+    ),
     [context, setContext] = useState<QuestContext>({
       mood: initialMood,
       duration: data.profile.preferences.typicalDuration,
@@ -85,6 +50,20 @@ function TaskFinder() {
     [advanced, setAdvanced] = useState(false);
   const started = useRef(false),
     timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  function chooseKind(kind: "task" | "learning") {
+    const next = new URLSearchParams(params);
+    next.set("kind", kind);
+    setParams(next);
+    if (kind === "task") setStep(0);
+  }
+  function goBack() {
+    if (step === 0) {
+      const next = new URLSearchParams(params);
+      next.delete("kind");
+      setParams(next);
+    }
+    setStep(step - 1);
+  }
   function generate(chaos = false) {
     setGenerating(true);
     setNoMatch(false);
@@ -157,89 +136,116 @@ function TaskFinder() {
       <PageHeader
         title="Find your next little adventure."
         description="A few quick choices. A world of possibilities."
-        back="/quest/generate"
+        back="/home"
       />
       <div className="quick-panel">
         <div className="step-caption">
-          {["A feeling", "A little time", "A starting point"][step]}
-          <span>Step {step + 1} of 3</span>
+          {
+            [
+              "A kind of quest",
+              "A feeling",
+              "A little time",
+              "A starting point",
+            ][step + 1]
+          }
+          <span>Step {step + 2} of 4</span>
         </div>
         <ProgressBar
-          value={((step + 1) / 3) * 100}
+          value={((step + 2) / 4) * 100}
           label="Quest finder progress"
         />
         <h2>
           {
             [
+              "Task or learning quest?",
               "How are you feeling?",
               "How much time do you have?",
               "Where are you?",
-            ][step]
+            ][step + 1]
           }
         </h2>
         <p>
           {
             [
+              "Choose what you want to do first.",
               "Go with your first instinct.",
               "There’s an adventure for every little gap.",
               "We’ll find something that fits.",
-            ][step]
+            ][step + 1]
           }
         </p>
         <div className="quick-options">
-          {step === 0
-            ? Object.keys(moodCategories)
-                .filter((m) => m !== "Curious")
-                .concat("Surprise me")
-                .map((m) => (
-                  <Chip
-                    key={m}
-                    selected={context.mood === m}
-                    onClick={() => setContext({ ...context, mood: m })}
-                  >
-                    <Icon
-                      name={
-                        [
-                          "palette",
-                          "compass",
-                          "leaf",
-                          "idea",
-                          "people",
-                          "zap",
-                          "sparkles",
-                        ][m === "Surprise me" ? 6 : Object.keys(moodCategories).indexOf(m)]
-                      }
-                    />
-                    {m}
-                  </Chip>
-                ))
-            : step === 1
-              ? [5, 15, 30, 60, 120, 240].map((time) => (
-                  <Chip
-                    key={time}
-                    selected={context.duration === time}
-                    onClick={() => setContext({ ...context, duration: time })}
-                  >
-                    <Icon name="clock" />
-                    {time === 60
-                      ? "1 hour"
-                      : time === 120
-                        ? "2+ hours"
-                        : time === 240
-                          ? "Half day"
-                          : `${time} min`}
-                  </Chip>
-                ))
-              : ["Home", "Outside", "Campus", "City", "Anywhere"].map((l) => (
-                  <Chip
-                    key={l}
-                    selected={context.location === l}
-                    onClick={() => setContext({ ...context, location: l })}
-                  >
-                    <Icon name={l === "Home" ? "home" : "pin"} />
-                    {l}
-                  </Chip>
-                ))}
+          {step === -1 ? (
+            <>
+              <Button variant="secondary" onClick={() => chooseKind("task")}>
+                Task
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => chooseKind("learning")}
+              >
+                Learning quest
+              </Button>
+            </>
+          ) : step === 0 ? (
+            Object.keys(moodCategories)
+              .filter((m) => m !== "Curious")
+              .concat("Surprise me")
+              .map((m) => (
+                <Chip
+                  key={m}
+                  selected={context.mood === m}
+                  onClick={() => setContext({ ...context, mood: m })}
+                >
+                  <Icon
+                    name={
+                      [
+                        "palette",
+                        "compass",
+                        "leaf",
+                        "idea",
+                        "people",
+                        "zap",
+                        "sparkles",
+                      ][
+                        m === "Surprise me"
+                          ? 6
+                          : Object.keys(moodCategories).indexOf(m)
+                      ]
+                    }
+                  />
+                  {m}
+                </Chip>
+              ))
+          ) : step === 1 ? (
+            [5, 15, 30, 60, 120, 240].map((time) => (
+              <Chip
+                key={time}
+                selected={context.duration === time}
+                onClick={() => setContext({ ...context, duration: time })}
+              >
+                <Icon name="clock" />
+                {time === 60
+                  ? "1 hour"
+                  : time === 120
+                    ? "2+ hours"
+                    : time === 240
+                      ? "Half day"
+                      : `${time} min`}
+              </Chip>
+            ))
+          ) : (
+            ["Home", "Outside", "Campus", "City", "Anywhere"].map((l) => (
+              <Chip
+                key={l}
+                selected={context.location === l}
+                onClick={() => setContext({ ...context, location: l })}
+              >
+                <Icon name={l === "Home" ? "home" : "pin"} />
+                {l}
+              </Chip>
+            ))
+          )}
         </div>
         {step === 2 && (
           <>
@@ -297,19 +303,21 @@ function TaskFinder() {
           </>
         )}
         <div className="flow-actions">
-          {step > 0 && (
-            <Button variant="quiet" onClick={() => setStep(step - 1)}>
+          {step >= 0 && (
+            <Button variant="quiet" onClick={goBack}>
               <Icon name="back" />
               Back
             </Button>
           )}
-          <Button
-            disabled={step === 0 && !context.mood}
-            onClick={() => (step === 2 ? generate() : setStep(step + 1))}
-          >
-            {step === 2 ? "Find my SideQuest" : "Next"}
-            <Icon name={step === 2 ? "sparkles" : "arrow"} />
-          </Button>
+          {step >= 0 && (
+            <Button
+              disabled={step === 0 && !context.mood}
+              onClick={() => (step === 2 ? generate() : setStep(step + 1))}
+            >
+              {step === 2 ? "Find my SideQuest" : "Next"}
+              <Icon name={step === 2 ? "sparkles" : "arrow"} />
+            </Button>
+          )}
         </div>
       </div>
       <p className="quiet-note">
